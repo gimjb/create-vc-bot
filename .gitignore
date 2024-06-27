@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# EditorConfig
+.editorconfig
+
+# Secrets
+.env
+!templates/.env
+
+# Node.js
+node_modules
+
+# TypeScript
+src/**/*.d.ts
+src/**/*.js
+src/**/*.js.map
+!src/**/*.test.js
+!src/**/test.js
+!src/**/types.d.ts
+
+# Logs
+logs/

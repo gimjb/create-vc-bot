@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+
+const fs = require('fs')
+
+const msgPath = process.argv[2]
+const msgContent = fs.readFileSync(msgPath, 'utf-8').trim()
+
+const validTitleRegex =
+  /^(?:build|chore|ci|docs|feat|fix|refactor|revert|style|test)(?:\([A-Za-z. 0-9-]+\))?!?: .*[^!,.:;?]$/u
+
+/** If the commit message title is invalid, exit with a non-zero code. */
+function validateTitle() {
+  const title = msgContent.split('\n')[0]
+
+  if (!title.match(validTitleRegex)) {
+    console.error(
+      `The title must match the following regex: ${validTitleRegex}`
+    )
+    process.exit(1)
+  }
+
+  if (title.length > 100) {
+    console.error('The title must be 100 characters or less')
+    process.exit(1)
+  }
+}
+
+/** If the commit message body is invalid, exit with a non-zero code. */
+function validateBody() {
+  const lines = msgContent.split('\n')
+
+  if (lines.length > 1 && lines[1] !== '') {
+    console.error('The optional body must be preceded by an empty line')
+    process.exit(1)
+  }
+
+  for (let i = 2; i < lines.length; i++) {
+    if (lines[i].length > 100) {
+      console.error(
+        `Each line of the body must be 100 characters or less (error on line ${
+          i + 1
+        })`
+      )
+      process.exit(1)
+    }
+  }
+}
+
+validateTitle()
+validateBody()
+
+// Since we found no error, exit with zero.
+process.exit(0)
